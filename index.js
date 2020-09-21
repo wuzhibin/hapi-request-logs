@@ -32,7 +32,7 @@ async function register(server, options) {
             info.referer = request.headers.referer
             info.token = request.headers.authorization || ""
             try {
-                if (request.headers.authorization) {
+                if (request.headers.authorization.length > 2) {
                     let userinfo = Base64.decode(request.headers.authorization.split('.')[1])
                     info.user = JSON.parse(userinfo)
                 }
