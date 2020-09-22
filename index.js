@@ -38,7 +38,8 @@ async function register(server, options) {
                 }
             } catch (e) { console.error(e) }
 
-            request.llog(info)
+            if (info.method != "options" )
+                request.llog(info)
         } catch (e) {
             console.error(e)
         }
