@@ -23,6 +23,15 @@ async function register(server, options) {
 
     server.ext('onRequest', (request, h) => {
         try {
+
+            // 不记录options
+            if (request.method == "options") return h.continue
+
+            // 不记录忽略
+            for (let p in options.ignore.path) {
+                if (request.path.indexOf(options.ignore.path[p]) > -1) return h.continue
+            }
+
             let info = {}
             info.remote = request.headers.x_forwarded_for || request.headers['x-real-ip'] || request.headers['x-forwarded-for']
             info.host = request.headers.host
@@ -30,16 +39,16 @@ async function register(server, options) {
             info.method = request.method
             info.proxy = request.headers['x-nginx-proxy']
             info.referer = request.headers.referer
-            info.token = request.headers.authorization || ""
+            info.token = request.headers.authorization != undefined && request.headers.authorization != "undefined" ? request.headers.authorization : ""
+
             try {
-                if (request.headers.authorization && request.headers.authorization.length > 2) {
+                if (info.token.indexOf('.') > -1) {
                     let userinfo = Base64.decode(request.headers.authorization.split('.')[1])
                     info.user = JSON.parse(userinfo)
                 }
             } catch (e) { console.error(e) }
 
-            if (info.method != "options" )
-                request.llog(info)
+            request.llog(info)
         } catch (e) {
             console.error(e)
         }
