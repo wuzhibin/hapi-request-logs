@@ -33,7 +33,7 @@ async function register(server, options) {
             }
 
             let info = {}
-            info.remote = request.headers.x_forwarded_for || request.headers['x-real-ip'] || request.headers['x-forwarded-for']
+            info.remote = request.headers.x_forwarded_for || request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || request.info.remoteAddress
             info.host = request.headers.host
             info.path = request.path
             info.method = request.method
