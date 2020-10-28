@@ -33,12 +33,14 @@ async function register(server, options) {
             }
 
             let info = {}
+            let timestamp = new Date().getTime()
             info.remote = request.headers.x_forwarded_for || request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || request.info.remoteAddress
             info.host = request.headers.host
             info.path = request.path
             info.method = request.method
             info.proxy = request.headers['x-nginx-proxy']
             info.referer = request.headers.referer
+            info.created_at = request.info.received || timestamp
             info.token = request.headers.authorization != undefined && request.headers.authorization != "undefined" ? request.headers.authorization : ""
 
             try {
